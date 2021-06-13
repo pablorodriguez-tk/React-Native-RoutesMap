@@ -1,30 +1,20 @@
-import React from 'react';
-import {StyleSheet, Text, View, Button, Platform} from 'react-native';
-import {
-  check,
-  PERMISSIONS,
-  PermissionStatus,
-  request,
-} from 'react-native-permissions';
+import React, {useContext} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {BlackButton} from '../components/BlackButton';
+import {PermissionsContext} from '../context/PermissionsContext';
 
 export const PermissionsScreen = () => {
-  const checkLocationPermission = async () => {
-    let permissionStatus: PermissionStatus;
-
-    if (Platform.OS === 'ios') {
-      permissionStatus = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-    } else {
-      permissionStatus = await request(
-        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      );
-    }
-    console.log({permissionStatus});
-  };
+  const {permissions, askLocationPermission} = useContext(PermissionsContext);
 
   return (
     <View style={styles.container}>
-      <Text>PermissionsScreen</Text>
-      <Button title="Permission" onPress={checkLocationPermission} />
+      <Text style={styles.title}>
+        It is necessary to use the gps to use this application
+      </Text>
+      <BlackButton title="Permission" onPress={askLocationPermission} />
+      <Text style={{marginTop: 20}}>
+        {JSON.stringify(permissions, null, 5)}
+      </Text>
     </View>
   );
 };
@@ -34,5 +24,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  title: {
+    width: 250,
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 20,
   },
 });
