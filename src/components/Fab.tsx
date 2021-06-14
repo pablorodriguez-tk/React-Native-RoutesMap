@@ -21,7 +21,7 @@ export const Fab = ({iconName, onPress, style}: Props) => {
         activeOpacity={0.8}
         onPress={onPress}
         style={styles.blackButton}>
-        <Icon name={iconName} size={35} color="white" />
+        <Icon name={iconName} size={35} color="white" style={{left: 1}} />
       </TouchableOpacity>
     </View>
   );

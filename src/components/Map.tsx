@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import {useLocation} from '../hooks/useLocation';
 import {LoadingScreen} from '../pages/LoadingScreen';
@@ -9,7 +9,16 @@ interface Props {
 }
 
 export const Map = ({markers}: Props) => {
-  const {hasLocation, initialPosition} = useLocation();
+  const {hasLocation, initialPosition, getCurrentLocation} = useLocation();
+  const mapViewRef = useRef<MapView>();
+
+  const centerPosition = async () => {
+    const {latitude, longitude} = await getCurrentLocation();
+
+    mapViewRef.current?.animateCamera({
+      center: {latitude, longitude},
+    });
+  };
 
   if (!hasLocation) {
     return <LoadingScreen />;
@@ -18,6 +27,7 @@ export const Map = ({markers}: Props) => {
   return (
     <>
       <MapView
+        ref={el => (mapViewRef.current = el!)}
         style={{flex: 1}}
         // provider={PROVIDER_GOOGLE} // Solo IOS
         showsUserLocation
@@ -35,8 +45,8 @@ export const Map = ({markers}: Props) => {
         /> */}
       </MapView>
       <Fab
-        iconName="star-outline"
-        onPress={() => console.log('hola')}
+        iconName="compass-outline"
+        onPress={centerPosition}
         style={{position: 'absolute', bottom: 20, right: 20}}
       />
     </>
